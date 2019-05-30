@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
 
 	while (keepSignal){
 		last = generatorInt(last);
-		//printf("Process 0 generates number %d\n", last);
+		printf("Process 0 generates number %d\n", last);
 		MPI_Send(
 	      /* data         = */ &last, 
 	      /* count        = */ 1, 
@@ -71,10 +71,9 @@ int main(int argc, char** argv) {
   			//printf("Process has reached the end of the counting");
 	  		keepSignal = 0;
 	  	}		
-	    MPI_Bcast(&keepSignal, 1, MPI_INT, world_rank, MPI_COMM_WORLD);
 	    while (keepSignal){
 	    	MPI_Recv(&last, 1, MPI_INT, world_rank-1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-		    if (last % primeHere != 0){
+		    if (last % primeHere != 0 && world_rank < world_size-1){
 	  			MPI_Send(
 			      /* data         = */ &last, 
 			      /* count        = */ 1, 
